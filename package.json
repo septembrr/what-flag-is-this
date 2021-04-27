@@ -1,0 +1,24 @@
+{
+  "name": "what-flag-is-this",
+  "version": "1.0.0",
+  "description": "A quiz game testing players on their knowledge of the flags of the world.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/septembrr/what-flag-is-this.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/septembrr/what-flag-is-this/issues"
+  },
+  "homepage": "https://github.com/septembrr/what-flag-is-this#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.0"
+  }
+}
