@@ -20,6 +20,11 @@ app.post('/image',function(req,res,next){
     return res.send("Image Result");
 });
 
+// Guess Results
+app.post('/guess', function(req,res,next){
+    return res.render("Guess Result");
+});
+
 // Main Page
 app.get('/',function(req,res){
     res.render('index');
