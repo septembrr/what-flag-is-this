@@ -27,7 +27,10 @@ app.post('/guess', function(req,res,next){
 
 // Main Page
 app.get('/',function(req,res){
-    res.render('index');
+    context = {
+        jsscripts: ['guess.js'],
+    };
+    res.render('index', context);
 });
 
 // 404
