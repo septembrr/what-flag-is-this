@@ -15,6 +15,8 @@ app.set('port', 8080);
 
 app.use(express.static('public'));
 
+var countries = require('./countries.js');
+
 // Image Service
 app.post('/image',function(req,res,next){
     return res.sendFile("img/france.png");
@@ -34,7 +36,11 @@ app.get('/guess', function(req,res,next){
 
 // Main Page
 app.get('/',function(req,res){
-    res.render('index');
+    const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+    const context = {
+        country: randomCountry,
+    }
+    res.render('index', context);
 });
 
 // 404
