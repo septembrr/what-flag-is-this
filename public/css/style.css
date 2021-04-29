@@ -80,6 +80,13 @@ header p {
     font-size: 14px;
     border: none;
     border-radius: 5px;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+
+.app-button:hover {
+    background: #092840;
+    transition-duration: 0.3s;
 }
 
 /* Guess Section */
@@ -107,8 +114,8 @@ form {
     margin-bottom: 20px;
 }
 
-.image-wrapper > * {
-    background: grey;
+.image-wrapper img {
+    max-width: 500px;
 }
 
 .result-wrapper {
@@ -119,4 +126,12 @@ form {
     max-width: 500px;
     margin: 0 auto;
     padding-bottom: 30px;
+}
+
+.correct {
+    color: #40a34e;
+}
+
+.incorrect {
+    color: #c35757;
 }

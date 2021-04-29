@@ -7,6 +7,11 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// HTTP Request
+const axios = require('axios');
+
+const fs = require('fs');
+
 // Handlebars Template Engine
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 app.engine('handlebars', handlebars.engine);
@@ -19,28 +24,43 @@ var countries = require('./countries.js');
 
 // Image Service
 app.post('/image',function(req,res,next){
-    return res.sendFile("img/france.png");
+    var bitmap = fs.readFileSync("./public/img/france.png");
+    return res.send(new Buffer(bitmap).toString('base64'));
 });
 
 // Guess Results
 app.get('/guess', function(req,res,next){
-    const result = req.query.solution.toUpperCase() == req.query.guess.toUpperCase();
-    const context = {
-        solution: req.query.solution,
-        guess: req.query.guess,
-        resultText: (result ? "CORRECT" : "INCORRECT"),
-        resultClass: (result ? "correct" : "incorrect"),
-    };
-    return res.render("guess", context);
+    axios.post('http://localhost:8080/image').then(function (response) {
+        const result = req.query.solution.toUpperCase() == req.query.guess.toUpperCase();
+        const context = {
+            solution: req.query.solution,
+            guess: req.query.guess,
+            resultText: (result ? "CORRECT" : "INCORRECT"),
+            resultClass: (result ? "correct" : "incorrect"),
+            country: req.query.solution,
+            imageData: response.data,
+        };
+
+        res.render("guess", context);
+    }).catch(function(err){
+        console.log("ERROR", err);
+    });
 });
 
 // Main Page
 app.get('/',function(req,res){
     const randomCountry = countries[Math.floor(Math.random() * countries.length)];
-    const context = {
-        country: randomCountry,
-    }
-    res.render('index', context);
+
+    axios.post('http://localhost:8080/image').then(function (response) {
+        const context = {
+            country: randomCountry,
+            imageData: response.data,
+        };
+
+        res.render('index', context);
+    }).catch(function(err){
+        console.log("ERROR", err);
+    });
 });
 
 // 404
