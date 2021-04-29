@@ -10,11 +10,20 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet"> 
         <link rel='stylesheet' href="/css/style.css" />
-        {{#each jsscripts}}
-            <script src="/js/{{this}}"></script>
-        {{/each}}
     </head>
     <body>
-       {{{body}}}
+        <div class="site-wrapper">
+            <header>
+                <img src="/img/globe-icon.png" alt="icon of desktop globe" />
+                <h1>What Flag is This?</h1>
+                <p>Test your knowledge of the flags of the world! Look at the flag and enter your guess in the field below to check if you are correct. Use this app to help you memorize the flags of the world, or to check your existing knowledge.</p>
+            </header>
+            <section>
+                {{{body}}}
+           </section>
+            <footer>
+                <p>Copyright © 2021 | <a href="/">Start Over</a></p>
+            </footer>
+        </div>
     </body>
 </html>

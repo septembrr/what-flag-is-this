@@ -13,6 +13,19 @@ h1 {
     font-weight: 400;
 }
 
+h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+h4 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin: 10px 0 20px;
+}
+
 /* Layout Styles */
 
 html {
@@ -96,4 +109,14 @@ form {
 
 .image-wrapper > * {
     background: grey;
+}
+
+.result-wrapper {
+    margin-top: 40px;
+}
+
+#country-info {
+    max-width: 500px;
+    margin: 0 auto;
+    padding-bottom: 30px;
 }

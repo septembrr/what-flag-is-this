@@ -17,20 +17,24 @@ app.use(express.static('public'));
 
 // Image Service
 app.post('/image',function(req,res,next){
-    return res.send("Image Result");
+    return res.sendFile("img/france.png");
 });
 
 // Guess Results
-app.post('/guess', function(req,res,next){
-    return res.render("Guess Result");
+app.get('/guess', function(req,res,next){
+    const result = req.query.solution.toUpperCase() == req.query.guess.toUpperCase();
+    const context = {
+        solution: req.query.solution,
+        guess: req.query.guess,
+        resultText: (result ? "CORRECT" : "INCORRECT"),
+        resultClass: (result ? "correct" : "incorrect"),
+    };
+    return res.render("guess", context);
 });
 
 // Main Page
 app.get('/',function(req,res){
-    context = {
-        jsscripts: ['guess.js'],
-    };
-    res.render('index', context);
+    res.render('index');
 });
 
 // 404
