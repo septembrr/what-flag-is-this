@@ -20,22 +20,44 @@ var countries = require('./countries.js');
 app.get('/image', async function(req, res, next){
     const country = req.query.keyword;
     const size = req.query.size ? req.query.size : "500px";
+    const altSearchTerm = req.query.alt_search_term;
 
-    if (countries.includes(country)) {
+    if (country) {
         const countryUrl = country.replace(" ", "_");
         const pageResponse = await axios.get(`https://en.wikipedia.org/wiki/${countryUrl}`);
         
         const pageHtml = pageResponse.data;
         const $ = cheerio.load(pageHtml);
 
-        const result = $('a.image > img')[0].attribs.src;
-        const imgUrl = "https:" + result.replace("125px", size);
+        const imgs = $('a.image > img');
+
+        let src = imgs[0].attribs.src;
+        let alt = imgs[0].attribs.alt;
+        let i = 1;
+
+        if (altSearchTerm) {
+            while (!alt.toUpperCase().includes(altSearchTerm.toUpperCase()) && i < imgs.length) {
+                src = imgs[i].attribs.src;
+                alt = imgs[i].attribs.alt;
+                i++;
+            }
+
+            if (i == imgs.length) {
+                src = imgs[0].attribs.src;
+                alt = imgs[0].attribs.alt.toUpperCase();
+            }
+        }
+
+        const imgUrl = "https:" + src.replace(/\/\d+px/i, `/${size}`);
     
         const imgResponse = await axios.get(imgUrl, {responseType: 'arraybuffer'});
         let base64Image = Buffer.from(imgResponse.data, 'binary').toString('base64');
-        return res.send(base64Image);
+        return res.send({
+            image: base64Image,
+            alt,
+        });
     } else {
-        return res.send("");
+        return res.status('404').send(new Error('No keyword provided'));
     }
 });
 
@@ -43,7 +65,7 @@ app.get('/image', async function(req, res, next){
 app.get('/guess', function(req, res, next){
     const solution = req.query.solution;
 
-    axios.get(`http://localhost:8080/image?keyword=${solution}`).then(function (response) {
+    axios.get(`http://localhost:8080/image?alt_search_term=Flag&keyword=${solution}`).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
         const context = {
             solution,
@@ -51,7 +73,8 @@ app.get('/guess', function(req, res, next){
             resultText: (result ? "CORRECT" : "INCORRECT"),
             resultClass: (result ? "correct" : "incorrect"),
             country: solution,
-            imageData: response.data,
+            imageData: response.data.image,
+            imageAlt: response.data.alt,
         };
 
         res.render("guess", context);
@@ -64,10 +87,11 @@ app.get('/guess', function(req, res, next){
 app.get('/', function(req, res){
     const country = countries[Math.floor(Math.random() * countries.length)];
 
-    axios.get(`http://localhost:8080/image?keyword=${country}`).then(function (response) {
+    axios.get(`http://localhost:8080/image?alt_search_term=Flag&keyword=${country}`).then(function (response) {
         const context = {
             country,
-            imageData: response.data,
+            imageData: response.data.image,
+            imageAlt: response.data.alt,
         };
 
         res.render('index', context);

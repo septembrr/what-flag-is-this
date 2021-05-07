@@ -102,7 +102,7 @@ module.exports = [
     "Liechtenstein",
     "Lithuania",
     "Luxembourg",
-    "Macedonia",
+    "North Macedonia",
     "Madagascar",
     "Malawi",
     "Malaysia",
