@@ -2,15 +2,9 @@
 var express = require('express');
 var app = express();
 
-// Body parser for POST endpoint routes
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 // HTTP Request
 const axios = require('axios');
-
-const fs = require('fs');
+const cheerio = require('cheerio');
 
 // Handlebars Template Engine
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
@@ -23,14 +17,35 @@ app.use(express.static('public'));
 var countries = require('./countries.js');
 
 // Image Service
-app.post('/image',function(req,res,next){
-    var bitmap = fs.readFileSync("./public/img/france.png");
-    return res.send(new Buffer(bitmap).toString('base64'));
+app.get('/image',function(req,res,next){
+    const country = req.query.keyword;
+
+    if (countries.includes(country)) {
+        const countryUrl = country.replace(" ", "_");
+        axios.get(`https://en.wikipedia.org/wiki/${countryUrl}`).then(function(response) {
+            const pageHtml = response.data;
+            const $ = cheerio.load(pageHtml);
+    
+            const result = $('a.image > img')[0].attribs.src;
+            const imgUrl = "https:" + result.replace("125px", "500px");
+    
+            axios.get(imgUrl, {responseType: 'arraybuffer'}).then(function(response) {
+                let base64Image = Buffer.from(response.data, 'binary').toString('base64');
+                return res.send(base64Image);
+            }).catch(function(err) {
+                console.log("ERROR", err);
+            });
+        }).catch(function(err) {
+            console.log("ERROR", err);
+        });
+    } else {
+        return res.send("");
+    }
 });
 
 // Guess Results
 app.get('/guess', function(req,res,next){
-    axios.post('http://localhost:8080/image').then(function (response) {
+    axios.get('http://localhost:8080/image').then(function (response) {
         const result = req.query.solution.toUpperCase() == req.query.guess.toUpperCase();
         const context = {
             solution: req.query.solution,
@@ -51,7 +66,7 @@ app.get('/guess', function(req,res,next){
 app.get('/',function(req,res){
     const randomCountry = countries[Math.floor(Math.random() * countries.length)];
 
-    axios.post('http://localhost:8080/image').then(function (response) {
+    axios.get('http://localhost:8080/image').then(function (response) {
         const context = {
             country: randomCountry,
             imageData: response.data,
