@@ -17,34 +17,30 @@ app.use(express.static('public'));
 var countries = require('./countries.js');
 
 // Image Service
-app.get('/image',function(req,res,next){
+app.get('/image', async function(req, res, next){
     const country = req.query.keyword;
+    const size = req.query.size ? req.query.size : "500px";
 
     if (countries.includes(country)) {
         const countryUrl = country.replace(" ", "_");
-        axios.get(`https://en.wikipedia.org/wiki/${countryUrl}`).then(function(response) {
-            const pageHtml = response.data;
-            const $ = cheerio.load(pageHtml);
+        const pageResponse = await axios.get(`https://en.wikipedia.org/wiki/${countryUrl}`);
+        
+        const pageHtml = pageResponse.data;
+        const $ = cheerio.load(pageHtml);
+
+        const result = $('a.image > img')[0].attribs.src;
+        const imgUrl = "https:" + result.replace("125px", size);
     
-            const result = $('a.image > img')[0].attribs.src;
-            const imgUrl = "https:" + result.replace("125px", "500px");
-    
-            axios.get(imgUrl, {responseType: 'arraybuffer'}).then(function(response) {
-                let base64Image = Buffer.from(response.data, 'binary').toString('base64');
-                return res.send(base64Image);
-            }).catch(function(err) {
-                console.log("ERROR", err);
-            });
-        }).catch(function(err) {
-            console.log("ERROR", err);
-        });
+        const imgResponse = await axios.get(imgUrl, {responseType: 'arraybuffer'});
+        let base64Image = Buffer.from(imgResponse.data, 'binary').toString('base64');
+        return res.send(base64Image);
     } else {
         return res.send("");
     }
 });
 
 // Guess Results
-app.get('/guess', function(req,res,next){
+app.get('/guess', function(req, res, next){
     const solution = req.query.solution;
 
     axios.get(`http://localhost:8080/image?keyword=${solution}`).then(function (response) {
@@ -65,7 +61,7 @@ app.get('/guess', function(req,res,next){
 });
 
 // Main Page
-app.get('/',function(req,res){
+app.get('/', function(req, res){
     const country = countries[Math.floor(Math.random() * countries.length)];
 
     axios.get(`http://localhost:8080/image?keyword=${country}`).then(function (response) {
@@ -81,7 +77,7 @@ app.get('/',function(req,res){
 });
 
 // 404
-app.use(function(req,res){
+app.use(function(req, res){
     res.status(404);
     res.render('404');
 });
