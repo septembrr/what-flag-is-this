@@ -45,14 +45,16 @@ app.get('/image',function(req,res,next){
 
 // Guess Results
 app.get('/guess', function(req,res,next){
-    axios.get('http://localhost:8080/image').then(function (response) {
-        const result = req.query.solution.toUpperCase() == req.query.guess.toUpperCase();
+    const solution = req.query.solution;
+
+    axios.get(`http://localhost:8080/image?keyword=${solution}`).then(function (response) {
+        const result = solution.toUpperCase() == req.query.guess.toUpperCase();
         const context = {
-            solution: req.query.solution,
+            solution,
             guess: req.query.guess,
             resultText: (result ? "CORRECT" : "INCORRECT"),
             resultClass: (result ? "correct" : "incorrect"),
-            country: req.query.solution,
+            country: solution,
             imageData: response.data,
         };
 
@@ -64,11 +66,11 @@ app.get('/guess', function(req,res,next){
 
 // Main Page
 app.get('/',function(req,res){
-    const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+    const country = countries[Math.floor(Math.random() * countries.length)];
 
-    axios.get('http://localhost:8080/image').then(function (response) {
+    axios.get(`http://localhost:8080/image?keyword=${country}`).then(function (response) {
         const context = {
-            country: randomCountry,
+            country,
             imageData: response.data,
         };
 
