@@ -1,7 +1,7 @@
 # What Flag is This? App
 A quiz game asking users to guess from which country a particular flag comes.
 
-![homepage of what flag is this app](https://github.com/septembrr/what-flag-is-this/tree/main/public/img/homepage.png?raw=true)
+![homepage of what flag is this app](https://github.com/septembrr/what-flag-is-this/tree/main/public/img/homepage.png)
 
 ## Image Scraper Microservice
 This app provides a microservice that scrapes images from Wikipedia pages. Based on the provided parameters, the service will return an applicable image.
