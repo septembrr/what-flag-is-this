@@ -21,5 +21,13 @@ If no `alt_search_term` is provided, the microservice will return the first imag
 
 If `alt_search_term` is provided, the microservice will search through all of the images found on the page until either one is found whose alt text contains the search term (case insensitive), or all of the images have been reviewed. If the search term is not found, the microservice will return the first image on the page.
 
+The scraper returns an object of the following form:
+```
+{
+    image: string (base64 image)
+    alt: string (alt text of image)
+}
+```
+
 ## Other Microservices
 This app also uses a text scraping service to show data about the country to the user.
