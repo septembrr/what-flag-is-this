@@ -67,6 +67,9 @@ app.get('/guess', function(req, res, next){
 
     axios.get(`http://localhost:8080/image?alt_search_term=Flag&keyword=${solution}`).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
+
+        // Call service to get country info here
+
         const context = {
             solution,
             guess: req.query.guess,
@@ -75,6 +78,7 @@ app.get('/guess', function(req, res, next){
             country: solution,
             imageData: response.data.image,
             imageAlt: response.data.alt,
+            countryInfo: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui. Quisque nec mauris sit amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo hendrerit.",
         };
 
         res.render("guess", context);
