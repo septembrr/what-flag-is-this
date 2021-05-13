@@ -17,44 +17,45 @@ app.use(express.static('public'));
 var countries = require('./countries.js');
 
 // Image Service
-app.get('/image', async function(req, res, next){
+app.get('/image', function(req, res, next){
     const country = req.query.keyword;
     const size = req.query.size ? req.query.size : "500px";
     const altSearchTerm = req.query.alt_search_term;
 
     if (country) {
         const countryUrl = country.replace(" ", "_");
-        const pageResponse = await axios.get(`https://en.wikipedia.org/wiki/${countryUrl}`);
-        
-        const pageHtml = pageResponse.data;
-        const $ = cheerio.load(pageHtml);
-
-        const imgs = $('a.image > img');
-
-        let src = imgs[0].attribs.src;
-        let alt = imgs[0].attribs.alt;
-        let i = 1;
-
-        if (altSearchTerm) {
-            while (!alt.toUpperCase().includes(altSearchTerm.toUpperCase()) && i < imgs.length) {
-                src = imgs[i].attribs.src;
-                alt = imgs[i].attribs.alt;
-                i++;
-            }
-
-            if (i == imgs.length) {
-                src = imgs[0].attribs.src;
-                alt = imgs[0].attribs.alt.toUpperCase();
-            }
-        }
-
-        const imgUrl = "https:" + src.replace(/\/\d+px/i, `/${size}`);
+        axios.get(`https://en.wikipedia.org/wiki/${countryUrl}`).then(function(pageResponse) {
+            const pageHtml = pageResponse.data;
+            const $ = cheerio.load(pageHtml);
     
-        const imgResponse = await axios.get(imgUrl, {responseType: 'arraybuffer'});
-        let base64Image = Buffer.from(imgResponse.data, 'binary').toString('base64');
-        return res.send({
-            image: base64Image,
-            alt,
+            const imgs = $('a.image > img');
+    
+            let src = imgs[0].attribs.src;
+            let alt = imgs[0].attribs.alt;
+            let i = 1;
+    
+            if (altSearchTerm) {
+                while (!alt.toUpperCase().includes(altSearchTerm.toUpperCase()) && i < imgs.length) {
+                    src = imgs[i].attribs.src;
+                    alt = imgs[i].attribs.alt;
+                    i++;
+                }
+    
+                if (i == imgs.length) {
+                    src = imgs[0].attribs.src;
+                    alt = imgs[0].attribs.alt.toUpperCase();
+                }
+            }
+    
+            const imgUrl = "https:" + src.replace(/\/\d+px/i, `/${size}`);
+        
+            axios.get(imgUrl, {responseType: 'arraybuffer'}).then(function(imgResponse) {
+                let base64Image = Buffer.from(imgResponse.data, 'binary').toString('base64');
+                return res.send({
+                    image: base64Image,
+                    alt,
+                });
+            });
         });
     } else {
         return res.status('404').send(new Error('No keyword provided'));
