@@ -66,23 +66,24 @@ app.get('/image', function(req, res, next){
 app.get('/guess', function(req, res, next){
     const solution = req.query.solution;
 
-    axios.get(`http://localhost:8080/image?alt_search_term=Flag&keyword=${solution}`).then(function (response) {
+    axios.get(`http://localhost:9092/image?alt_search_term=Flag&keyword=${solution}`).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
 
-        // Call service to get country info here
+        axios.get(`https://portfive.net/api/text-scraper?page=${solution}&introOnly=true&a=false`).then(function(textRes) {
+            const context = {
+                solution,
+                guess: req.query.guess,
+                resultText: (result ? "CORRECT" : "INCORRECT"),
+                resultClass: (result ? "correct" : "incorrect"),
+                country: solution,
+                imageData: response.data.image,
+                imageAlt: response.data.alt,
+                countryInfo: textRes.data.nodes,
+            };
+    
+            res.render("guess", context);
+        });
 
-        const context = {
-            solution,
-            guess: req.query.guess,
-            resultText: (result ? "CORRECT" : "INCORRECT"),
-            resultClass: (result ? "correct" : "incorrect"),
-            country: solution,
-            imageData: response.data.image,
-            imageAlt: response.data.alt,
-            countryInfo: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui. Quisque nec mauris sit amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo hendrerit.",
-        };
-
-        res.render("guess", context);
     }).catch(function(err){
         console.log("ERROR", err);
     });
@@ -92,7 +93,7 @@ app.get('/guess', function(req, res, next){
 app.get('/', function(req, res){
     const country = countries[Math.floor(Math.random() * countries.length)];
 
-    axios.get(`http://localhost:8080/image?alt_search_term=Flag&keyword=${country}`).then(function (response) {
+    axios.get(`http://localhost:9092/image?alt_search_term=Flag&keyword=${country}`).then(function (response) {
         const context = {
             country,
             imageData: response.data.image,

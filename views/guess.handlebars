@@ -3,6 +3,10 @@
 <div class="result-wrapper">
     <h3 class="{{resultClass}}">{{resultText}}!</h3>
     <h4>This is the flag of {{solution}}.</h4>
-    <p id="country-info">{{countryInfo}}</p>
+    <div id="country-info">
+        {{#each countryInfo}}
+            <{{this.type}}>{{{this.text}}}</{{this.type}}>
+        {{/each}}
+    </div>
     <a href="/"><button class="app-button">TRY AGAIN?</button></a>
 </div>
