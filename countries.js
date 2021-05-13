@@ -27,6 +27,7 @@ module.exports = [
     "Bulgaria",
     "Burkina Faso",
     "Burundi",
+    "Canada",
     "Cambodia",
     "Cameroon",
     "Cape Verde",

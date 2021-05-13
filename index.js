@@ -93,7 +93,12 @@ app.get('/guess', function(req, res, next){
 app.get('/', function(req, res){
     const country = countries[Math.floor(Math.random() * countries.length)];
 
-    axios.get(`http://localhost:9092/image?alt_search_term=Flag&keyword=${country}`).then(function (response) {
+    let alt_search_term = "Flag";
+    if (country == 'Nepal' || country == 'Canada') {
+        alt_search_term = '';
+    }
+
+    axios.get(`http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${country}`).then(function (response) {
         const context = {
             country,
             imageData: response.data.image,
