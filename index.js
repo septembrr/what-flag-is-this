@@ -10,7 +10,7 @@ const cheerio = require('cheerio');
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 8080);
+app.set('port', 9092);
 
 app.use(express.static('public'));
 
