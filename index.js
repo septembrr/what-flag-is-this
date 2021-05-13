@@ -69,7 +69,7 @@ app.get('/guess', function(req, res, next){
     axios.get(`http://localhost:9092/image?alt_search_term=Flag&keyword=${solution}`).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
 
-        axios.get(`https://portfive.net/api/text-scraper?page=${solution}&introOnly=true&a=false`).then(function(textRes) {
+        axios.get(`https://portfive.net/api/text-scraper?page=${solution}&introOnly=true`).then(function(textRes) {
             const context = {
                 solution,
                 guess: req.query.guess,
