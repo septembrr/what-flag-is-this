@@ -4,9 +4,12 @@
     <h3 class="{{resultClass}}">{{resultText}}!</h3>
     <h4>This is the flag of {{solution}}.</h4>
     <div id="country-info">
-        {{#each countryInfo}}
-            <{{this.type}}>{{{this.text}}}</{{this.type}}>
-        {{/each}}
+        <button>LEARN MORE</button>
+        <div>
+            {{#each countryInfo}}
+                <{{this.type}}>{{{this.text}}}</{{this.type}}>
+            {{/each}}
+        </div>
     </div>
     <a href="/"><button class="app-button">TRY AGAIN?</button></a>
 </div>

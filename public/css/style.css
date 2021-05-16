@@ -135,3 +135,24 @@ form {
 .incorrect {
     color: #c35757;
 }
+
+/* Accordion Overrides */
+
+.ui-accordion .ui-accordion-header {
+    border: none;
+    display: inline-block;
+    color: #333;
+    font-size: 14px;
+    font-family: 'Source Sans Pro', sans-serif;
+    padding: 8px 25px;
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: 0;
+    border: none;
+}
+
+.ui-accordion-header.ui-state-active {
+    background: #3794df;
+    color: #fff;
+}
