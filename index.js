@@ -29,6 +29,13 @@ app.get('/image', function(req, res, next){
             const $ = cheerio.load(pageHtml);
     
             const imgs = $('a.image > img');
+
+            if (!imgs.length) {
+                return res.send({
+                    image: "",
+                    alt: "",
+                });
+            }
     
             let src = imgs[0].attribs.src;
             let alt = imgs[0].attribs.alt;
