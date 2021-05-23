@@ -124,6 +124,7 @@ app.get('/', function(req, res){
         res.render('index', context);
     }).catch(function(err){
         console.log("ERROR", err);
+        res.render('error');
     });
 });
 
