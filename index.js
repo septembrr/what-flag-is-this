@@ -66,7 +66,12 @@ app.get('/image', function(req, res, next){
 app.get('/guess', function(req, res, next){
     const solution = req.query.solution;
 
-    axios.get(`http://localhost:9092/image?alt_search_term=Flag&keyword=${solution}`).then(function (response) {
+    let alt_search_term = "Flag";
+    if (solution == 'Nepal' || solution == 'Canada') {
+        alt_search_term = '';
+    }
+
+    axios.get(`http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${solution}`).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
 
         axios.get(`https://portfive.net/api/text-scraper?page=${solution}&introOnly=true`).then(function(textRes) {
