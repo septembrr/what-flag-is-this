@@ -89,6 +89,11 @@ header p {
     transition-duration: 0.3s;
 }
 
+.error-box {
+    border: 1px dotted #000;
+    margin-top: 20px;
+}
+
 /* Guess Section */
 
 form {

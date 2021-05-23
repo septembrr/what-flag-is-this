@@ -81,18 +81,22 @@ app.get('/guess', function(req, res, next){
     axios.get(`http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${solution}`).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
 
+        let context = {
+            solution,
+            guess: req.query.guess,
+            resultText: (result ? "CORRECT" : "INCORRECT"),
+            resultClass: (result ? "correct" : "incorrect"),
+            country: solution,
+            imageData: response.data.image,
+            imageAlt: response.data.alt,
+        };
+
         axios.get(`https://portfive.net/api/text-scraper?page=${solution}&introOnly=true`).then(function(textRes) {
-            const context = {
-                solution,
-                guess: req.query.guess,
-                resultText: (result ? "CORRECT" : "INCORRECT"),
-                resultClass: (result ? "correct" : "incorrect"),
-                country: solution,
-                imageData: response.data.image,
-                imageAlt: response.data.alt,
-                countryInfo: textRes.data.nodes,
-            };
-    
+            context.countryHasInfo = true;
+            context.countryInfo = textRes.data.nodes;
+            res.render("guess", context);
+        }).catch(function(err) {
+            context.countryHasInfo = false;
             res.render("guess", context);
         });
 

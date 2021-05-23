@@ -6,9 +6,15 @@
     <div id="country-info">
         <button>LEARN MORE</button>
         <div>
-            {{#each countryInfo}}
-                <{{this.type}}>{{{this.text}}}</{{this.type}}>
-            {{/each}}
+            {{#if countryHasInfo}}
+                {{#each countryInfo}}
+                    <{{this.type}}>{{{this.text}}}</{{this.type}}>
+                {{/each}}
+            {{else}}
+                <div class="error-box">
+                    <p><i>No country information was found.</i></p>
+                </div>
+            {{/if}}
         </div>
     </div>
     <a href="/"><button class="app-button">TRY AGAIN?</button></a>
