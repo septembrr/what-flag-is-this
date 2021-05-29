@@ -89,6 +89,7 @@ app.get('/guess', function(req, res, next){
             country: solution,
             imageData: response.data.image,
             imageAlt: response.data.alt,
+            formStatus: "disabled",
         };
 
         axios.get(`https://portfive.net/api/text-scraper?page=${solution}&introOnly=true`).then(function(textRes) {

@@ -1,7 +1,7 @@
 <div class="guess-wrapper">
     <form id="guess-form" method="GET" action="/guess">
-        <input id="guess-field" type="text" name="guess" placeholder="Enter Your Guess..." />
+        <input id="guess-field" type="text" name="guess" placeholder="Enter Your Guess..." {{formStatus}} />
         <input type="hidden" name="solution" value="{{country}}" />
-        <input id="guess-submit" class="app-button" type="submit" value="SUBMIT"/>
+        <input id="guess-submit" class="app-button" type="submit" value="SUBMIT" {{formStatus}} />
     </form>
 </div>

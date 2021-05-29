@@ -89,6 +89,15 @@ header p {
     transition-duration: 0.3s;
 }
 
+.app-button:disabled {
+    background: #c8c8c8;
+    cursor: default;
+}
+
+input:disabled {
+    background: none;
+}
+
 .error-box {
     border: 1px dotted #000;
     margin-top: 20px;
