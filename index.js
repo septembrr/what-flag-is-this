@@ -1,12 +1,9 @@
-// Express Routes
 var express = require('express');
 var app = express();
 
-// HTTP Request
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-// Handlebars Template Engine
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
