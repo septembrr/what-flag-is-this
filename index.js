@@ -40,8 +40,16 @@ function getImgSrcAlt(imgs, altSearchTerm) {
     return { src, alt }
 }
 
+function getAltSearchTerm() {
+    let alt_search_term = "Flag";
+    if (solution == 'Nepal' || solution == 'Canada') {
+        alt_search_term = '';
+    }
+    return alt_search_term;
+}
+
 // Image Service
-app.get('/image', function(req, res, next){
+app.get('/image', function(req, res, next) {
     const country = req.query.keyword;
     const size = req.query.size ? req.query.size : "500px";
     const altSearchTerm = req.query.alt_search_term;
@@ -77,10 +85,7 @@ app.get('/image', function(req, res, next){
 app.get('/guess', function(req, res, next){
     const solution = req.query.solution;
 
-    let alt_search_term = "Flag";
-    if (solution == 'Nepal' || solution == 'Canada') {
-        alt_search_term = '';
-    }
+    let alt_search_term = getAltSearchTerm();
 
     axios.get(`http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${solution}`).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
@@ -114,10 +119,7 @@ app.get('/guess', function(req, res, next){
 app.get('/', function(req, res){
     const country = countries[Math.floor(Math.random() * countries.length)];
 
-    let alt_search_term = "Flag";
-    if (country == 'Nepal' || country == 'Canada') {
-        alt_search_term = '';
-    }
+    let alt_search_term = getAltSearchTerm();
 
     axios.get(`http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${country}`).then(function (response) {
         const context = {
