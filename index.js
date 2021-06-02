@@ -41,11 +41,10 @@ function getImgSrcAlt(imgs, altSearchTerm) {
 }
 
 function getAltSearchTerm(country) {
-    let altSearchTerm = "Flag";
     if (country == 'Nepal' || country == 'Canada') {
-        altSearchTerm = '';
+        return '';
     }
-    return altSearchTerm;
+    return "Flag";
 }
 
 // Image Service
