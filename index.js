@@ -40,9 +40,9 @@ function getImgSrcAlt(imgs, altSearchTerm) {
     return { src, alt }
 }
 
-function getAltSearchTerm() {
+function getAltSearchTerm(country) {
     let altSearchTerm = "Flag";
-    if (solution == 'Nepal' || solution == 'Canada') {
+    if (country == 'Nepal' || country == 'Canada') {
         altSearchTerm = '';
     }
     return altSearchTerm;
@@ -85,7 +85,7 @@ app.get('/image', function(req, res, next) {
 app.get('/guess', function(req, res, next){
     const solution = req.query.solution;
 
-    const altSearchTerm = getAltSearchTerm();
+    const altSearchTerm = getAltSearchTerm(solution);
     const imgServiceUrl = `http://localhost:9092/image?alt_search_term=${altSearchTerm}&keyword=${solution}`;
 
     axios.get(imgServiceUrl).then(function (response) {
@@ -122,7 +122,7 @@ app.get('/guess', function(req, res, next){
 app.get('/', function(req, res){
     const country = countries[Math.floor(Math.random() * countries.length)];
 
-    let altSearchTerm = getAltSearchTerm();
+    let altSearchTerm = getAltSearchTerm(country);
     const imgServiceUrl = `http://localhost:9092/image?alt_search_term=${altSearchTerm}&keyword=${country}`;
 
     axios.get(imgServiceUrl).then(function (response) {
