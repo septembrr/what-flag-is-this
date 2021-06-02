@@ -85,9 +85,10 @@ app.get('/image', function(req, res, next) {
 app.get('/guess', function(req, res, next){
     const solution = req.query.solution;
 
-    let alt_search_term = getAltSearchTerm();
+    const alt_search_term = getAltSearchTerm();
+    const imgServiceUrl = `http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${solution}`;
 
-    axios.get(`http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${solution}`).then(function (response) {
+    axios.get(imgServiceUrl).then(function (response) {
         const result = solution.toUpperCase() == req.query.guess.toUpperCase();
 
         let context = {
@@ -101,7 +102,9 @@ app.get('/guess', function(req, res, next){
             formStatus: "disabled",
         };
 
-        axios.get(`https://portfive.net/api/text-scraper?page=${solution}&introOnly=true`).then(function(textRes) {
+        const textServiceUrl = `https://portfive.net/api/text-scraper?page=${solution}&introOnly=true`;
+
+        axios.get(textServiceUrl).then(function(textRes) {
             context.countryHasInfo = true;
             context.countryInfo = textRes.data.nodes;
             res.render("guess", context);
@@ -120,8 +123,9 @@ app.get('/', function(req, res){
     const country = countries[Math.floor(Math.random() * countries.length)];
 
     let alt_search_term = getAltSearchTerm();
+    const imgServiceUrl = `http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${country}`;
 
-    axios.get(`http://localhost:9092/image?alt_search_term=${alt_search_term}&keyword=${country}`).then(function (response) {
+    axios.get(imgServiceUrl).then(function (response) {
         const context = {
             country,
             imageData: response.data.image,
