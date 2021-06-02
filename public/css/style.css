@@ -103,7 +103,7 @@ input:disabled {
     margin-top: 20px;
 }
 
-/* Guess Section */
+/* Form */
 
 form {
     display: flex;
@@ -131,6 +131,8 @@ form {
 .image-wrapper img {
     max-width: 500px;
 }
+
+/* Results Display */
 
 .result-wrapper {
     margin-top: 40px;
