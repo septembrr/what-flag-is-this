@@ -14,6 +14,32 @@ app.use(express.static('public'));
 
 var countries = require('./countries.js');
 
+function getImagesFromPage(pageHtml) {
+    const $ = cheerio.load(pageHtml);
+    return $('a.image > img');
+}
+  
+function getImgSrcAlt(imgs, altSearchTerm) {
+    let src = imgs[0].attribs.src;
+    let alt = imgs[0].attribs.alt;
+    let i = 1;
+
+    if (altSearchTerm) {
+        while (!alt.toUpperCase().includes(altSearchTerm.toUpperCase()) && i < imgs.length) {
+            src = imgs[i].attribs.src;
+            alt = imgs[i].attribs.alt;
+            i++;
+        }
+        
+        if (i == imgs.length) {
+            src = imgs[0].attribs.src;
+            alt = imgs[0].attribs.alt.toUpperCase();
+        }
+    }
+
+    return { src, alt }
+}
+
 // Image Service
 app.get('/image', function(req, res, next){
     const country = req.query.keyword;
@@ -23,11 +49,7 @@ app.get('/image', function(req, res, next){
     if (country) {
         const countryUrl = country.replace(" ", "_");
         axios.get(`https://en.wikipedia.org/wiki/${countryUrl}`).then(function(pageResponse) {
-            const pageHtml = pageResponse.data;
-            const $ = cheerio.load(pageHtml);
-    
-            const imgs = $('a.image > img');
-
+            const imgs = getImagesFromPage(pageResponse.data);
             if (!imgs.length) {
                 return res.send({
                     image: "",
@@ -35,30 +57,14 @@ app.get('/image', function(req, res, next){
                 });
             }
     
-            let src = imgs[0].attribs.src;
-            let alt = imgs[0].attribs.alt;
-            let i = 1;
-    
-            if (altSearchTerm) {
-                while (!alt.toUpperCase().includes(altSearchTerm.toUpperCase()) && i < imgs.length) {
-                    src = imgs[i].attribs.src;
-                    alt = imgs[i].attribs.alt;
-                    i++;
-                }
-    
-                if (i == imgs.length) {
-                    src = imgs[0].attribs.src;
-                    alt = imgs[0].attribs.alt.toUpperCase();
-                }
-            }
-    
-            const imgUrl = "https:" + src.replace(/\/\d+px/i, `/${size}`);
+            const imgData = getImgSrcAlt(imgs, altSearchTerm);
+            const imgUrl = "https:" + imgData.src.replace(/\/\d+px/i, `/${size}`);
         
             axios.get(imgUrl, {responseType: 'arraybuffer'}).then(function(imgResponse) {
                 let base64Image = Buffer.from(imgResponse.data, 'binary').toString('base64');
                 return res.send({
                     image: base64Image,
-                    alt,
+                    alt: imgData.alt,
                 });
             });
         });
